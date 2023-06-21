@@ -34,6 +34,10 @@
     <ProjectReference Include="..\Salon.Infra.Tests\Salon.Infra.Tests.csproj" />
   </ItemGroup>
 
+	<PropertyGroup>
+		<ErrorOnDuplicatePublishOutputFiles>false</ErrorOnDuplicatePublishOutputFiles>
+	</PropertyGroup>
+
   <ItemGroup>
     <Folder Include="Users\" />
   </ItemGroup>

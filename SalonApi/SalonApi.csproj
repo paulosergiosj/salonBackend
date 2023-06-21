@@ -17,4 +17,8 @@
 		<ProjectReference Include="..\Salon.Infra\Salon.Infra.csproj" />
 	</ItemGroup>
 
+	<PropertyGroup>
+		<ErrorOnDuplicatePublishOutputFiles>false</ErrorOnDuplicatePublishOutputFiles>
+	</PropertyGroup>
+
 </Project>

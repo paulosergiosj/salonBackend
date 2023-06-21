@@ -20,6 +20,9 @@
 	<ItemGroup>
 		<ProjectReference Include="..\Salon.Domain\Salon.Domain.csproj" />
 	</ItemGroup>
+	<PropertyGroup>
+		<ErrorOnDuplicatePublishOutputFiles>false</ErrorOnDuplicatePublishOutputFiles>
+	</PropertyGroup>
 
 
 </Project>
