@@ -8,7 +8,7 @@ namespace Salon.Application.ServiceOrders.Interfaces
     public interface IItemService
     {
         Task<Result> CreateItem(ItemCommand item);
-        Task<Result> GetAll();
+        Task<Result> GetAllAsync();
         Task<Result> GetItemById(ObjectId id);
         Task<Result> RemoveItem(ObjectId id);
     }

@@ -32,10 +32,10 @@ namespace Salon.Application.ServiceOrders.Services
         {
             var item = await _itemRepository.GetByIdAsync(id);
 
-            return new Result(item, HttpStatusCode.OK);
+            return new Result(_itemMapper.MapResponse(item), HttpStatusCode.OK);
         }
 
-        public async Task<Result> GetAll()
+        public async Task<Result> GetAllAsync()
         {
             var items = await _itemRepository.GetAllAsync();
 

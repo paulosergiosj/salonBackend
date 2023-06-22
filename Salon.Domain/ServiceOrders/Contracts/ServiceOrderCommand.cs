@@ -11,6 +11,6 @@ namespace Salon.Domain.ServiceOrders.Contracts
         public DateTime Date { get; set; }
         public PaymentMethod PaymentMethod { get; set; }
         public string Obs { get; set; }
-        public List<KeyValuePair<string, double>> Items { get; set; }
+        public List<ItemOrderDto> Items { get; set; }
     }
 }

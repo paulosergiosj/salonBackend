@@ -11,8 +11,8 @@ namespace Salon.Application.ServiceOrders.Mappers
         public ItemResponse MapResponse(Item item)
             => new ItemResponse
             {
-                Id = item.Id.ToString(),
-                Description = item.Description
+                Id = item?.Id.ToString(),
+                Description = item?.Description
             };
 
         public List<ItemResponse> MapResponse(List<Item> items)

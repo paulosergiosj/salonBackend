@@ -33,7 +33,7 @@ namespace SalonApi.Controllers
         [HttpGet]
         public async Task<IActionResult> GetAll()
         {
-            var response = await itemService.GetAll();
+            var response = await itemService.GetAllAsync();
 
             Response.StatusCode = (int)response.StatusCode;
 

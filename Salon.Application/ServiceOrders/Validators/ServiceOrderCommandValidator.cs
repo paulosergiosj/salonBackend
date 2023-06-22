@@ -73,14 +73,12 @@ namespace Salon.Application.ServiceOrders.Validators
                 .WithMessage(INVALID_ITEM);
         }
 
-        private async Task<bool> IsItemsValid(List<KeyValuePair<string, double>> items)
+        private async Task<bool> IsItemsValid(List<ItemOrderDto> items)
         {
             foreach (var item in items)
             {
-                if (!ObjectId.TryParse(item.Key, out var idParsed) || !await _itemRepository.ExistAsync(idParsed))
-                {
+                if (!ObjectId.TryParse(item.Id, out var idParsed) || !await _itemRepository.ExistAsync(idParsed))
                     return false;
-                }
             }
 
             return true;

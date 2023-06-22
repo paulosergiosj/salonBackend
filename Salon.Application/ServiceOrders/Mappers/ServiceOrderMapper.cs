@@ -18,7 +18,8 @@ namespace Salon.Application.ServiceOrders.Mappers
             entity.InformClient(ObjectId.Parse(command.ClientId));
             entity.InformDate(command.Date);
             entity.InformPaymentMethod(command.PaymentMethod);
-            command.Items.ForEach(x => entity.AddItem(new ItemOrder { ItemId = ObjectId.Parse(x.Key), Value = x.Value }));
+            entity.Obs = command.Obs;
+            command.Items.ForEach(x => entity.AddItem(new ItemOrder { ItemId = ObjectId.Parse(x.Id), Value = x.Value }));
 
             return entity;
         }
@@ -30,7 +31,7 @@ namespace Salon.Application.ServiceOrders.Mappers
                 Id = entity.Id.ToString(),
                 ClientId = entity.ClientId.ToString(),
                 Date = entity.Date,
-                Items = entity.Services.Select(x => new KeyValuePair<string, double>(x.ItemId.ToString(), x.Value)).ToList(),
+                Items = entity.Services.Select(x => new ItemOrderDto { Id = x.ItemId.ToString(), Value = x.Value }).ToList(),
                 Obs = entity.Obs,
                 PaymentMethod = (int)entity.PaymentMethod
             };

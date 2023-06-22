@@ -112,7 +112,7 @@ namespace Salon.Application.Tests.Users.Services
             var result = await service.GetAllUsers();
 
             var users = (List<UserResponse>)result.Value;
-            users.Count().Should().Be(allFromRepository.Count());
+            users.Count.Should().Be(allFromRepository.Count());
         }
 
         [Test]

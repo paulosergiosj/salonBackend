@@ -1,6 +1,5 @@
 ﻿using Microsoft.Extensions.Configuration;
 using MongoDB.Driver;
-using Salon.Domain.Constants;
 
 namespace Salon.Infra.DbContext
 {
@@ -9,7 +8,6 @@ namespace Salon.Infra.DbContext
         private readonly string _databaseName;
         private IMongoDatabase _db { get; set; }
         private IMongoClient _mongoClient { get; set; }
-        public IClientSessionHandle Session { get; set; }
         public MongoDbContext(IMongoClient mongoClient, IConfiguration configuration)
         {
             _databaseName = configuration["ConnectionStrings:DataBase"];

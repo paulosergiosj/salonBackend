@@ -34,7 +34,7 @@ namespace Salon.Application.ServiceOrders.Services
 
         public async Task<Result> CreateOrder(ServiceOrderCommand command)
         {
-            var validation = _newValidator.Validate(command);
+            var validation = await _newValidator.ValidateAsync(command);
 
             if (!validation.IsValid)
                 return ResultHelper.GetErrorResult(validation.Errors);
