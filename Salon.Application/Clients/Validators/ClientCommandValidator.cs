@@ -51,7 +51,7 @@ namespace Salon.Application.Clients.Validators
         {
             try
             {
-                var MailAddress = new MailAddress(email);
+                new MailAddress(email);
                 return true;
             }
             catch

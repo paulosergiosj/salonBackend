@@ -9,7 +9,7 @@ namespace Salon.Infra.CollectionDefinitions
 {
     public abstract class CollectionDefinitions<TEntity> : ICollectionDefinitions<TEntity> where TEntity : Entity<ObjectId>
     {
-        public CollectionDefinitions(IMongoDbContext mongoDbContext) { }
+        protected CollectionDefinitions(IMongoDbContext mongoDbContext) { }
         public abstract IMongoCollection<TEntity> GetCollection();
         public abstract void BuildIndexes();
     }

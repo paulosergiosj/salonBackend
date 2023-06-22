@@ -22,7 +22,7 @@ namespace Salon.Infra.DbContext
             return _db.GetCollection<T>(name);
         }
 
-        public void Dispose()
+        public void Destroy()
         {
             _mongoClient.DropDatabase(_databaseName);
         }

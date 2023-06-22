@@ -42,7 +42,7 @@ namespace Salon.Application.Tests.Clients.Services
         [OneTimeTearDown]
         public void TearDown()
         {
-            _mongoDbContext.Dispose();
+            _mongoDbContext.Destroy();
         }
 
         [Test]
@@ -94,6 +94,37 @@ namespace Salon.Application.Tests.Clients.Services
 
             var client = (List<ClientResponse>)result.Value;
             client.Count().Should().Be(allFromRepository);
+        }
+
+        [Test]
+        public async Task Should_Get_ClientResponse_By_Id()
+        {
+            using var scope = _serviceProvider.CreateScope();
+            var service = scope.ServiceProvider.GetRequiredService<IClientService>();
+            var repository = scope.ServiceProvider.GetRequiredService<IClientRepository>();
+
+            var result = await service.GetClientById(ClientFakes.IdBob);
+
+            var response = result.Value as ClientResponse;
+            var expected = ClientFakes.GetClientResponseBob();
+
+            response.Should().HaveEquivalentMembers(expected);
+        }
+
+        [Test]
+        public async Task Should_Update_Client_From_Command()
+        {
+            var command = ClientFakes.GetTonyUpdateCommand();
+
+            using var scope = _serviceProvider.CreateScope();
+            var service = scope.ServiceProvider.GetRequiredService<IClientService>();
+            var repository = scope.ServiceProvider.GetRequiredService<IClientRepository>();
+            await service.UpdateClient(command);
+
+            var updated = await repository.GetByIdAsync(new MongoDB.Bson.ObjectId(command.Id));
+            var expected = ClientFakes.GetClientTonyUpdated();
+
+            updated.Should().HaveEquivalentMembers(expected);
         }
 
         [Test]

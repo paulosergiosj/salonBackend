@@ -7,7 +7,7 @@ namespace Salon.Infra.CollectionDefinitions
 {
     public class ClientDefinitions : ICollectionDefinitions<Client>
     {
-        private IMongoDbContext _mongoDbContext;
+        private readonly IMongoDbContext _mongoDbContext;
         public ClientDefinitions(IMongoDbContext mongoDbContext)
         {
             _mongoDbContext = mongoDbContext;
@@ -16,7 +16,7 @@ namespace Salon.Infra.CollectionDefinitions
         {
             var coll = _mongoDbContext.GetCollection<Client>(typeof(Client).Name);
 
-            var hasIndexes = coll.Indexes.List().ToList().Count();
+            var hasIndexes = coll.Indexes.List().ToList().Count;
             if (hasIndexes <= 1)
             {
                 var indexBuilder = Builders<Client>.IndexKeys;

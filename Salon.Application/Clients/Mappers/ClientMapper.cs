@@ -29,5 +29,17 @@ namespace Salon.Application.Clients.Mappers
                 Gender = entity.Gender
             };
         }
-    }
+
+        public ClientResponse MapEntityToResponse(Client client)
+            => new ClientResponse
+            {
+                Id = client.Id.ToString(),
+                Name = client.Name,
+                BirthDate = client.BirthDate,
+                ContactNumbers = client.ContactNumbers,
+                Email = client.Email,
+                Gender = client.Gender
+            };
+    };
 }
+

@@ -47,11 +47,11 @@ namespace Salon.Infra
             serviceCollection.AddTransient<IUserRepository, UserRepository>();
             serviceCollection.AddTransient<IClientRemovedRepository>(x => new ClientRepository(
                 x.GetRequiredService<IMongoDbContext>(),
-                true)); //Verificar sobre instanciar aqui, consumo de memoria desnecessário;
+                true));
 
             serviceCollection.AddTransient<IUserRemovedRepository>(x => new UserRepository(
                 x.GetRequiredService<IMongoDbContext>(),
-                true));//Verificar sobre instanciar aqui, consumo de memoria desnecessário;
+                true));
 
             serviceCollection.AddTransient<IServiceOrderRepository, ServiceOrderRepository>();
             serviceCollection.AddTransient<IRepository<Item>, Repository<Item>>();

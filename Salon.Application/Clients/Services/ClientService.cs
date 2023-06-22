@@ -20,10 +20,10 @@ namespace Salon.Application.Clients.Services
         private readonly IClientServiceBuilder _clientServiceBuilder;
 
         public ClientService(
-            IClientRepository clientRepository, 
+            IClientRepository clientRepository,
             IValidator<ClientCommand> newValidator,
             IValidator<UpdateClientCommand> updateClientValidator,
-            IClientMapper clientMapper, 
+            IClientMapper clientMapper,
             IClientServiceBuilder clientServiceBuilder)
         {
             _clientRepository = clientRepository;
@@ -64,8 +64,8 @@ namespace Salon.Application.Clients.Services
 
         public async Task<Result> GetClientById(ObjectId id)
         {
-            //var builder = _clientServiceBuilder.FilterById(id).Build();
-            return new Result(await _clientRepository.GetByIdAsync(id), HttpStatusCode.OK);
+            var client = await _clientRepository.GetByIdAsync(id);
+            return new Result(client != null ? _clientMapper.MapEntityToResponse(client) : null, HttpStatusCode.OK);
         }
 
         public async Task<Result> UpdateClient(UpdateClientCommand clientCommand)

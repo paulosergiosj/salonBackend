@@ -32,33 +32,14 @@ namespace SalonApi
             services.AddAppDependencyInjection();
             services.AuthenticationConfiguration(Configuration);
             services.BuildIndexes();
-
-            //services.AddCors(
-            //    options => options.AddPolicy("AllowCors",
-            //    builder => 
-            //    {
-            //        //builder
-            //        //.WithOrigins(Configuration["Front:Url"])
-            //        //.AllowAnyMethod()
-            //        //.WithHeaders("Authorization", "Access-Control-Allow-Origin", "Content-type");
-            //        builder.AllowAnyOrigin()
-            //        .AllowAnyMethod()
-            //        .AllowAnyHeader();
-            //    }));
         }
 
-        // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
             }
-
-            app.UseCors(x => x
-            .AllowAnyOrigin()
-            .AllowAnyMethod()
-            .AllowAnyHeader());
 
             app.UseHttpsRedirection();
 

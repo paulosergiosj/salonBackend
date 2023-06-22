@@ -20,6 +20,7 @@ namespace Salon.Application.Tests.Clients.Loads
         {
             await _repository.InsertAsync(ClientFakes.GetClientMike());
             await _repository.InsertAsync(ClientFakes.GetClientBob());
+            await _repository.InsertAsync(ClientFakes.GetClientTony());
         }
 
         public async Task<bool> IsLoadedAsync()

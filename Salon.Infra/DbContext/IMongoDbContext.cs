@@ -6,6 +6,6 @@ namespace Salon.Infra.DbContext
     public interface IMongoDbContext
     {
         IMongoCollection<T> GetCollection<T>(string name);
-        void Dispose();
+        void Destroy();
     }
 }

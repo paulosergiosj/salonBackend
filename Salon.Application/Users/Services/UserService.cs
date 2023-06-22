@@ -75,7 +75,8 @@ namespace Salon.Application.Users.Services
         public async Task<Result> GetUserByIdAsync(ObjectId id)
         {
             var builder = _userServiceBuilder.FilterById(id).Build();
-            return new Result(await _userRepository.GetByFirstOrDefaultExpressionAsync(builder, _userMapper.MapResponse()), HttpStatusCode.OK);
+            var user = await _userRepository.GetByFirstOrDefaultExpressionAsync(builder, _userMapper.MapResponse());
+            return new Result(user, HttpStatusCode.OK);
         }
 
         public async Task<Result> UpdateUser(UpdateUserCommand UserCommand)
@@ -86,6 +87,8 @@ namespace Salon.Application.Users.Services
                 return ResultHelper.GetErrorResult(validation.Errors);
 
             var User = _userMapper.MapCommandToEntity(UserCommand);
+
+            User.Password = BCryptNet.HashPassword(User.Password);
 
             await _userRepository.UpdateAsync(User);
 

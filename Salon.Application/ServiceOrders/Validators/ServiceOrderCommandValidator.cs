@@ -6,6 +6,8 @@ using Salon.Domain.ServiceOrders.Contracts;
 using Salon.Domain.ServiceOrders.Entities;
 using Salon.Domain.ServiceOrders.Repositories;
 using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace Salon.Application.ServiceOrders.Validators
 {
@@ -15,7 +17,7 @@ namespace Salon.Application.ServiceOrders.Validators
         private const string INVALID_DATE = "Can't create Order from Future";
         private const string FIELD_EMPTY = "Field {0} can't be empty!";
         private const string INVALID_ITEM = "There is an Invalid Item!";
-        private readonly IServiceOrderRepository _serviceOrderRepository;
+
         private readonly IClientRepository _clientRepository;
         private readonly IRepository<Item> _itemRepository;
         public ServiceOrderCommandValidator(
@@ -23,7 +25,6 @@ namespace Salon.Application.ServiceOrders.Validators
             IClientRepository clientRepository,
             IRepository<Item> itemRepository)
         {
-            _serviceOrderRepository = serviceOrderRepository;
             _clientRepository = clientRepository;
             _itemRepository = itemRepository;
 
@@ -32,56 +33,69 @@ namespace Salon.Application.ServiceOrders.Validators
             ValidateItems();
         }
 
-        private void ValidateClient()
+        public void ValidateClient()
         {
-            RuleFor(x => x)
-                .Custom(async (command, context) =>
-                {
-                    RuleFor(command => command.ClientId).NotEmpty().WithMessage(string.Format(FIELD_EMPTY, nameof(command.ClientId)));
+            RuleFor(command => command.ClientId)
+                .NotEmpty()
+                .WithSeverity(Severity.Error)
+                .WithMessage(x => string.Format(FIELD_EMPTY, nameof(x.ClientId)));
 
-                    if (!string.IsNullOrEmpty(command.ClientId) && ObjectId.TryParse(command.ClientId, out var idParsed))
-                    {
-                        var client = await _clientRepository.GetByIdAsync(idParsed);
-                        if (client == null)
-                        {
-                            context.AddFailure(INVALID_CLIENTID);
-                        }
-                    }
-                    else
-                    {
-                        context.AddFailure(INVALID_CLIENTID);
-                    }
-                });
+            RuleFor(command => command)
+                .MustAsync(async (x, cancelation) => await IsValidClient(x.ClientId))
+                .WithSeverity(Severity.Error)
+                .WithMessage(INVALID_CLIENTID);
         }
 
-        private void ValidateDate()
+        public void ValidateDate()
         {
-            RuleFor(x => x)
-                .Custom((command, context) =>
-                {
-                    RuleFor(command => command.Date).NotEmpty().WithMessage(string.Format(FIELD_EMPTY, nameof(command.Date)));
-                    RuleFor(command => command.Date).GreaterThan(DateTime.Now).WithMessage(INVALID_DATE);
-                });
+            RuleFor(command => command.Date)
+                .NotEmpty()
+                .WithSeverity(Severity.Error)
+                .WithMessage(x => string.Format(FIELD_EMPTY, nameof(x.Date)));
+
+            RuleFor(command => command.Date)
+                .GreaterThan(DateTime.Now)
+                .WithSeverity(Severity.Error)
+                .WithMessage(INVALID_DATE);
         }
 
-        private void ValidateItems()
+        public void ValidateItems()
         {
-            RuleFor(x => x)
-               .Custom(async (command, context) =>
-               {
-                   RuleFor(command => command.Items).NotNull().NotEmpty().WithMessage(string.Format(FIELD_EMPTY, nameof(command.Items)));
+            RuleFor(command => command.Items)
+                .NotNull()
+                .NotEmpty()
+                .WithSeverity(Severity.Error)
+                .WithMessage(x => string.Format(FIELD_EMPTY, nameof(x.Items)));
 
-                   foreach (var item in command.Items)
-                   {
-                       if (ObjectId.TryParse(item.Key, out var idParsed))
-                       {
-                           if (!await _itemRepository.ExistAsync(idParsed))
-                               context.AddFailure(INVALID_ITEM);
-                           continue;
-                       }
-                       context.AddFailure(INVALID_ITEM);
-                   }
-               });
+            RuleFor(command => command.Items)
+                .MustAsync(async (x, cancelation) => await IsItemsValid(x))
+                .WithSeverity(Severity.Error)
+                .WithMessage(INVALID_ITEM);
+        }
+
+        private async Task<bool> IsItemsValid(List<KeyValuePair<string, double>> items)
+        {
+            foreach (var item in items)
+            {
+                if (!ObjectId.TryParse(item.Key, out var idParsed) || !await _itemRepository.ExistAsync(idParsed))
+                {
+                    return false;
+                }
+            }
+
+            return true;
+        }
+
+        private async Task<bool> IsValidClient(string clientId)
+        {
+            if (!string.IsNullOrEmpty(clientId) && ObjectId.TryParse(clientId, out var idParsed))
+            {
+                var client = await _clientRepository.GetByIdAsync(idParsed);
+
+                return client != null;
+            }
+
+            return false;
         }
     }
 }

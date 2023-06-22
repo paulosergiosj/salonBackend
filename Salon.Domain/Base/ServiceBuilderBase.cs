@@ -10,7 +10,7 @@ namespace Salon.Domain.Base
 {
     public class ServiceBuilderBase<TEntity> : IServiceBuilderBase<TEntity> where TEntity : Entity<ObjectId>
     {
-        private IList<Expression<Func<TEntity, bool>>> _filters;
+        private readonly IList<Expression<Func<TEntity, bool>>> _filters;
 
         public ServiceBuilderBase()
         {

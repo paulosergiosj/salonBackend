@@ -19,6 +19,7 @@ namespace Salon.Application.Tests.Users.Loads
         {
             await _repository.InsertAsync(UserFake.GetUserEntity());
             await _repository.InsertAsync(UserFake.GetUserRobert());
+            await _repository.InsertAsync(UserFake.GetUserTony());
         }
 
         public async Task<bool> IsLoadedAsync()

@@ -1,5 +1,6 @@
 ﻿using FluentAssertions;
 using Microsoft.Extensions.DependencyInjection;
+using MongoDB.Bson;
 using NUnit.Framework;
 using Salon.Application.Tests.DataLoad;
 using Salon.Application.Tests.Extensions;
@@ -44,7 +45,7 @@ namespace Salon.Application.Tests.Users.Services
         [OneTimeTearDown]
         public void TearDown()
         {
-            _mongoDbContext.Dispose();
+            _mongoDbContext.Destroy();
         }
 
         [Test]
@@ -63,7 +64,7 @@ namespace Salon.Application.Tests.Users.Services
             created.Should().HaveEquivalentMembers(expected,
                 o => o
                 .Excluding(x => x.Id)
-                .Excluding(x=> x.Password));
+                .Excluding(x => x.Password));
 
             BCryptNet.Verify(UserFake.PASSWORD_JAMES, created.Password).Should().BeTrue();
         }
@@ -75,15 +76,28 @@ namespace Salon.Application.Tests.Users.Services
             var service = scope.ServiceProvider.GetRequiredService<IUserService>();
             var repository = scope.ServiceProvider.GetRequiredService<IUserRemovedRepository>();
 
-            var user = await repository.GetUserByLoginAsync(UserFake.LOGIN_ROBERT);
+            var user = await repository.GetByIdAsync(UserFake.IdFoo);
 
             user.Removed.Should().BeFalse();
 
             await service.DeleteUser(user.Id);
 
-            var removedUser = await repository.GetUserByLoginAsync(UserFake.LOGIN_ROBERT);
+            var removedUser = await repository.GetByIdAsync(UserFake.IdFoo);
 
             removedUser.Removed.Should().BeTrue();
+        }
+
+        [Test]
+        public async Task Should_Return_Message_When_Deleting_Invalid_UserId()
+        {
+            using var scope = _serviceProvider.CreateScope();
+            var service = scope.ServiceProvider.GetRequiredService<IUserService>();
+
+            var invalidId = ObjectId.GenerateNewId();
+            var result = await service.DeleteUser(invalidId);
+
+            result.Error.Should().BeTrue();
+            result.Message.Should().Be("User Invalid!");
         }
 
         [Test]
@@ -99,6 +113,43 @@ namespace Salon.Application.Tests.Users.Services
 
             var users = (List<UserResponse>)result.Value;
             users.Count().Should().Be(allFromRepository.Count());
+        }
+
+        [Test]
+        public async Task Should_Get_UserResponse_By_Id()
+        {
+            using var scope = _serviceProvider.CreateScope();
+            var service = scope.ServiceProvider.GetRequiredService<IUserService>();
+            var repository = scope.ServiceProvider.GetRequiredService<IUserRepository>();
+
+            var id = UserFake.GetUserRobert().Id;
+
+            var result = await service.GetUserByIdAsync(id);
+            var expected = UserFake.GetUserResponseRobert();
+
+            var actual = (UserResponse)result.Value;
+            actual.Should().HaveEquivalentMembers(expected);
+        }
+
+        [Test]
+        public async Task Should_Update_User_From_Command()
+        {
+            var command = UserFake.GetUpdateUserCommandTony();
+
+            using var scope = _serviceProvider.CreateScope();
+            var service = scope.ServiceProvider.GetRequiredService<IUserService>();
+            var repository = scope.ServiceProvider.GetRequiredService<IUserRepository>();
+
+            await service.UpdateUser(command);
+
+            var updated = await repository.GetByIdAsync(ObjectId.Parse(command.Id));
+            var expected = UserFake.GetUserTonyUpdated();
+
+            updated.Should().HaveEquivalentMembers(expected,
+                o => o
+                .Excluding(x => x.Password));
+
+            BCryptNet.Verify(UserFake.PASSWORD_TONY, updated.Password).Should().BeTrue();
         }
 
         [Test]
