@@ -4,9 +4,11 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using Microsoft.OpenApi.Models;
 using Salon.Application;
 using Salon.Infra;
 using Salon.Infra.CollectionDefinitions;
+using System.Linq;
 using VideoStore.Api.Middlewares;
 
 namespace SalonApi
@@ -23,6 +25,7 @@ namespace SalonApi
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllers();
+            services.AddHttpContextAccessor();
 
             services.AddTransient<GlobalExceptionHandlingMiddleware>();
             services.AddTransient<ILogger, Logger<object>>();
@@ -32,6 +35,11 @@ namespace SalonApi
             services.AddAppDependencyInjection();
             services.AuthenticationConfiguration(Configuration);
             services.BuildIndexes();
+
+            services.AddSwaggerGen(c =>
+            {
+                c.SwaggerDoc("v1", new OpenApiInfo { Title = "Salon API", Version = "v1", });
+            });
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
@@ -40,6 +48,16 @@ namespace SalonApi
             {
                 app.UseDeveloperExceptionPage();
             }
+
+            app.UseSwagger();
+            app.UseSwaggerUI(c => {
+                c.SwaggerEndpoint("/swagger/v1/swagger.json", "Salon API");
+            });
+
+            app.UseCors(x => x
+            .AllowAnyOrigin()
+            .AllowAnyMethod()
+            .AllowAnyHeader());
 
             app.UseHttpsRedirection();
 
