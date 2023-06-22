@@ -72,10 +72,10 @@ namespace Salon.Application.Tests.ServiceOrders.Services
             var service = scope.ServiceProvider.GetRequiredService<IItemService>();
             var repository = scope.ServiceProvider.GetRequiredService<IRepository<Item>>();
 
-            var id = ItemFake.GetItemManicure().Id;
+            var id = ItemFake.GetItemBrazilianBlowout().Id;
 
             var result = await service.GetItemById(id);
-            var expected = ItemFake.GetItemResponseManicure();
+            var expected = ItemFake.GetItemResponseBrazilianBlowout();
 
             var actual = (ItemResponse)result.Value;
             actual.Should().HaveEquivalentMembers(expected);

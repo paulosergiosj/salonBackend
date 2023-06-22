@@ -55,7 +55,7 @@ namespace SalonApi
             });
 
             app.UseCors(x => x
-            .AllowAnyOrigin()
+            .WithOrigins("http://localhost:4200")
             .AllowAnyMethod()
             .AllowAnyHeader());
 

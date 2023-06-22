@@ -2,7 +2,7 @@
 using MongoDB.Bson;
 using Salon.Domain.Clients.Contracts;
 using Salon.Domain.Clients.Repositories;
-using System.Net.Mail;
+using System.ComponentModel.DataAnnotations;
 using System.Threading.Tasks;
 
 namespace Salon.Application.Clients.Validators
@@ -49,15 +49,8 @@ namespace Salon.Application.Clients.Validators
 
         private bool IsEmailValid(string email)
         {
-            try
-            {
-                new MailAddress(email);
-                return true;
-            }
-            catch
-            {
-                return false;
-            }
+            var emailValidation = new EmailAddressAttribute();
+            return emailValidation.IsValid(email);
         }
 
         private async Task<bool> IsEmailAvailable(ClientCommand command)

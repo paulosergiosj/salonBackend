@@ -38,6 +38,13 @@ namespace Salon.Application.Tests.ServiceOrders.Fakes
                 Id = IdManicure.ToString()
             };
 
+        public static ItemResponse GetItemResponseBrazilianBlowout()
+    => new ItemResponse()
+    {
+        Description = DESCRIPTION_BRAZILIAN_BLOWOUT,
+        Id = IdBrazilianBlowout.ToString()
+    };
+
         public static ItemEntity GetItemBrazilianBlowout()
             => GetItemEntity(DESCRIPTION_BRAZILIAN_BLOWOUT, IdBrazilianBlowout);
 
