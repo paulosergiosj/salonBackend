@@ -5,7 +5,7 @@
 [![Security Rating](https://sonarcloud.io/api/project_badges/measure?project=paulosergiosj_salonBackend&metric=security_rating)](https://sonarcloud.io/summary/new_code?id=paulosergiosj_salonBackend)
 # Backend API
 
-A simple POO API with some CRUD using:
+A simple OOP API with some CRUD using:
 
 * JWToken
 * MongoDb
